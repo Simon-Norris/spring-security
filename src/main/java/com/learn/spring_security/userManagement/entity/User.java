@@ -1,15 +1,16 @@
 package com.learn.spring_security.userManagement.entity;
 
+import com.learn.spring_security.base.entity.Auditable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class User extends Auditable {
 
     @Column(unique = true, nullable = false)
@@ -19,4 +20,7 @@ public class User extends Auditable {
     private String lastname;
 
     private String password;
+
+    @Column(nullable = false)
+    private String authority;
 }

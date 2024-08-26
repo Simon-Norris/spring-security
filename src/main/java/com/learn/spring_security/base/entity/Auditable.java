@@ -1,4 +1,4 @@
-package com.learn.spring_security.userManagement.entity;
+package com.learn.spring_security.base.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
