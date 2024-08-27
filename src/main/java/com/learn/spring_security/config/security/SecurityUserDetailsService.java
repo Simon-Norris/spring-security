@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class SecurityUserManager implements UserDetailsService {
+public class SecurityUserDetailsService implements UserDetailsService {
 
     private final UserRepo userInfoRepo;
     @Override

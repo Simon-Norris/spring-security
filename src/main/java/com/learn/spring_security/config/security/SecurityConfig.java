@@ -20,10 +20,10 @@ public class SecurityConfig {
 
     private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
-    private final SecurityUserManager securityUserManager;
+    private final SecurityUserDetailsService securityUserDetailsService;
 
-    public SecurityConfig(SecurityUserManager securityUserManager) {
-        this.securityUserManager = securityUserManager;
+    public SecurityConfig(SecurityUserDetailsService securityUserDetailsService) {
+        this.securityUserDetailsService = securityUserDetailsService;
     }
 
     @Bean
@@ -31,7 +31,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(c -> c.requestMatchers("/user/create").permitAll());
         http.authorizeHttpRequests(c -> c.anyRequest().authenticated());
-        http.userDetailsService(securityUserManager);
+        http.userDetailsService(securityUserDetailsService);
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.exceptionHandling(ex -> {

@@ -23,4 +23,12 @@ public class User extends Auditable {
 
     @Column(nullable = false)
     private String authority;
+
+    private boolean enabled;
+
+    private boolean locked;
+
+    private boolean expired;
+
+    private boolean credentialsExpired;
 }
