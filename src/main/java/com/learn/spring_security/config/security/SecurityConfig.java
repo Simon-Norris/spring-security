@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -20,10 +18,10 @@ public class SecurityConfig {
 
     private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
-    private final SecurityUserDetailsService securityUserDetailsService;
+    private final CustomAuthenticationProvider customAuthenticationProvider;
 
-    public SecurityConfig(SecurityUserDetailsService securityUserDetailsService) {
-        this.securityUserDetailsService = securityUserDetailsService;
+    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider) {
+        this.customAuthenticationProvider = customAuthenticationProvider;
     }
 
     @Bean
@@ -31,7 +29,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(c -> c.requestMatchers("/user/create").permitAll());
         http.authorizeHttpRequests(c -> c.anyRequest().authenticated());
-        http.userDetailsService(securityUserDetailsService);
+        http.authenticationProvider(customAuthenticationProvider);
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.exceptionHandling(ex -> {
@@ -42,10 +40,5 @@ public class SecurityConfig {
         http.httpBasic(Customizer.withDefaults());
 
         return http.build();
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
