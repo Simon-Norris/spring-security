@@ -1,7 +1,7 @@
-package com.learn.spring_security.userManagement.service;
+package com.learn.spring_security.app.userManagement.service;
 
-import com.learn.spring_security.userManagement.entity.User;
-import com.learn.spring_security.userManagement.repo.UserRepo;
+import com.learn.spring_security.app.userManagement.entity.User;
+import com.learn.spring_security.app.userManagement.repo.UserRepo;
 import org.springframework.stereotype.Service;
 
 @Service

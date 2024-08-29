@@ -1,7 +1,9 @@
-package com.learn.spring_security.userManagement.entity;
+package com.learn.spring_security.app.userManagement.entity;
 
 import com.learn.spring_security.base.entity.Auditable;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity

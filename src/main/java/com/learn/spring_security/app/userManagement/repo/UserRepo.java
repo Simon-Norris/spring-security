@@ -1,6 +1,6 @@
-package com.learn.spring_security.userManagement.repo;
+package com.learn.spring_security.app.userManagement.repo;
 
-import com.learn.spring_security.userManagement.entity.User;
+import com.learn.spring_security.app.userManagement.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

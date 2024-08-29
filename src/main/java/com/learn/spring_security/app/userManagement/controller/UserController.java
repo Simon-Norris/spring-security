@@ -1,10 +1,13 @@
-package com.learn.spring_security.userManagement.controller;
+package com.learn.spring_security.app.userManagement.controller;
 
-import com.learn.spring_security.userManagement.entity.User;
-import com.learn.spring_security.userManagement.service.UserService;
+import com.learn.spring_security.app.userManagement.entity.User;
+import com.learn.spring_security.app.userManagement.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
