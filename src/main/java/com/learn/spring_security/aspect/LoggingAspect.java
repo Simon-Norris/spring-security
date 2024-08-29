@@ -1,10 +1,7 @@
 package com.learn.spring_security.aspect;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -26,5 +23,10 @@ public class LoggingAspect {
     @AfterReturning(pointcut = "allMethodsWithinApplication()", returning = "result")
     public void logAfterMethod(JoinPoint joinPoint, Object result) {
         logger.info("::: METHOD RETURNS:: METHOD {} HAS RETURNED WITH VALUE:: {} :::", joinPoint.getSignature(), result);
+    }
+
+    @AfterThrowing(pointcut = "allMethodsWithinApplication()", throwing = "ex")
+    public void handleException(JoinPoint joinPoint, Exception ex) {
+        logger.error("::: EXCEPTION:: METHOD: {} ENCOUNTERED EXCEPTION: {}",joinPoint.getSignature(), ex.getMessage());
     }
 }
