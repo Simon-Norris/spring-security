@@ -1,6 +1,5 @@
 package com.learn.spring_security.config.security;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,14 +16,18 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     private final CustomAuthenticationProvider customAuthenticationProvider;
 
-    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider) {
+    private final AuthEntryPointJwt authEntryPointJwt;
+
+    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, AuthEntryPointJwt authEntryPointJwt) {
         this.customAuthenticationProvider = customAuthenticationProvider;
+        this.authEntryPointJwt = authEntryPointJwt;
     }
 
     @Bean
@@ -33,11 +37,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(c -> c.anyRequest().authenticated());
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.exceptionHandling(ex -> {
-            logger.info("::: EXCEPTION :: ");
-            ex.authenticationEntryPoint((request, response, authException) ->
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage()));
-        });
+        http.exceptionHandling(e -> e.authenticationEntryPoint(authEntryPointJwt));
         http.httpBasic(Customizer.withDefaults());
 
         return http.build();
