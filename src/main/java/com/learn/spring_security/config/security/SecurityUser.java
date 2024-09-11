@@ -3,10 +3,11 @@ package com.learn.spring_security.config.security;
 import com.learn.spring_security.app.userManagement.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class SecurityUser implements UserDetails {
@@ -15,7 +16,9 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(user::getAuthority);
+        return user.getRoles().stream()
+                .map(item -> new SimpleGrantedAuthority("ROLE_" + item.getName().getValue()))
+                .collect(Collectors.toList());
     }
 
     @Override

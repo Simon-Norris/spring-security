@@ -30,7 +30,6 @@ public class UserController {
                 .firstname(req.get("firstname"))
                 .lastname(req.get("lastname"))
                 .password(passwordEncoder.encode(req.get("password")))
-                .authority("ROLE_USER")
                 .build();
 
         User savedUser = userService.createUser(user);

@@ -28,7 +28,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (userDetails.getUsername().equals(username) && passwordEncoder.matches(password, userDetails.getPassword())) {
             return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
         } else {
-            throw new AuthenticationCredentialsNotFoundException("Error! wtf");
+            throw new AuthenticationCredentialsNotFoundException("Invalid Username or password");
         }
     }
     @Override
