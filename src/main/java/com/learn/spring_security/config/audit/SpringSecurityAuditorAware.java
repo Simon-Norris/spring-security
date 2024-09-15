@@ -13,11 +13,11 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            return Optional.empty();
+            return Optional.of("Unknown");
         }
 
         if (authentication instanceof AnonymousAuthenticationToken) {
-            return Optional.of("System");
+            return Optional.of("Anonymous");
         }
 
         return Optional.of(authentication.getName());

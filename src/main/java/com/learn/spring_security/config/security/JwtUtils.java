@@ -1,9 +1,11 @@
 package com.learn.spring_security.config.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.AeadAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +30,10 @@ public class JwtUtils {
     private String secret;
 
     @Value("${jwt.expiration}")
-    private Duration jwtExpiration;
+    private long jwtExpirationInMillis;  // Store expiration time in milliseconds
 
     @Value("${jwt.refresh-expiration}")
-    private Duration refreshExpiration;
+    private long refreshExpirationInMillis;  // Store refresh token expiration in milliseconds
 
     /**
      * Generates a JWT token for a given username.
@@ -54,10 +55,10 @@ public class JwtUtils {
      */
     private String createToken(Map<String, Object> claims, String username) {
         return Jwts.builder()
-                .claims(claims)
-                .subject(username)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + jwtExpiration.toMillis()))
+                .setClaims(claims)
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMillis))  // Use long for expiration
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -118,7 +119,7 @@ public class JwtUtils {
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-        } catch (JwtException e) {
+        } catch (SecurityException | IllegalArgumentException e) {
             logger.error("Failed to extract claims from token: {}", e.getMessage());
             throw new IllegalArgumentException("Invalid token");
         }
