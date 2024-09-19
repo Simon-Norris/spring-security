@@ -47,7 +47,7 @@ public class AuthFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
+            logger.error("::: Could not set user authentication in security context due to {}:::", ex);
         }
 
         filterChain.doFilter(request, response);
