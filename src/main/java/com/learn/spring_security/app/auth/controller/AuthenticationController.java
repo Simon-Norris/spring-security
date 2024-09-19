@@ -1,10 +1,10 @@
-package com.learn.spring_security.app.auth;
+package com.learn.spring_security.app.auth.controller;
 
-import com.learn.spring_security.app.userManagement.dto.LoginRequestDto;
-import com.learn.spring_security.app.userManagement.dto.UserRegisterDto;
-import com.learn.spring_security.app.userManagement.entity.User;
-import com.learn.spring_security.app.userManagement.enums.RoleType;
-import com.learn.spring_security.app.userManagement.service.UserService;
+import com.learn.spring_security.app.auth.dto.LoginRequestDto;
+import com.learn.spring_security.app.auth.dto.UserRegisterDto;
+import com.learn.spring_security.base.userManagement.entity.User;
+import com.learn.spring_security.base.userManagement.enums.RoleType;
+import com.learn.spring_security.base.userManagement.service.UserService;
 import com.learn.spring_security.config.security.JwtUtils;
 import com.learn.spring_security.utils.ApiResponse;
 import com.learn.spring_security.utils.ApiResponseModel;

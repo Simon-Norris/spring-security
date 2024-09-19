@@ -1,15 +1,13 @@
-package com.learn.spring_security.app.userManagement.bootstrap;
+package com.learn.spring_security.base.userManagement.bootstrap;
 
-import com.learn.spring_security.app.userManagement.entity.Role;
-import com.learn.spring_security.app.userManagement.entity.User;
-import com.learn.spring_security.app.userManagement.enums.RoleType;
-import com.learn.spring_security.app.userManagement.service.UserService;
+import com.learn.spring_security.base.userManagement.entity.Role;
+import com.learn.spring_security.base.userManagement.entity.User;
+import com.learn.spring_security.base.userManagement.enums.RoleType;
+import com.learn.spring_security.base.userManagement.service.UserService;
 import com.learn.spring_security.config.audit.SystemAuthenticationToken;
-import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

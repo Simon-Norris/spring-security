@@ -1,4 +1,4 @@
-package com.learn.spring_security.app.userManagement.entity;
+package com.learn.spring_security.base.userManagement.entity;
 
 import com.learn.spring_security.base.entity.Auditable;
 import jakarta.persistence.*;

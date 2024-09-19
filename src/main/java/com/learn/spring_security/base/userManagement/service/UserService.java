@@ -1,10 +1,10 @@
-package com.learn.spring_security.app.userManagement.service;
+package com.learn.spring_security.base.userManagement.service;
 
 import com.learn.spring_security.app.exceptions.RoleNotFoundException;
 import com.learn.spring_security.app.exceptions.UsernameNotFoundException;
-import com.learn.spring_security.app.userManagement.entity.Role;
-import com.learn.spring_security.app.userManagement.entity.User;
-import com.learn.spring_security.app.userManagement.enums.RoleType;
+import com.learn.spring_security.base.userManagement.entity.Role;
+import com.learn.spring_security.base.userManagement.entity.User;
+import com.learn.spring_security.base.userManagement.enums.RoleType;
 
 import java.util.Optional;
 

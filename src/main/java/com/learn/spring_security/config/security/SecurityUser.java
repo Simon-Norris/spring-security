@@ -1,6 +1,6 @@
 package com.learn.spring_security.config.security;
 
-import com.learn.spring_security.app.userManagement.entity.User;
+import com.learn.spring_security.base.userManagement.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

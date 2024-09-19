@@ -1,4 +1,4 @@
-package com.learn.spring_security.app.userManagement.dto;
+package com.learn.spring_security.app.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

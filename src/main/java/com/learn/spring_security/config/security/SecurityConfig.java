@@ -1,10 +1,9 @@
 package com.learn.spring_security.config.security;
 
-import com.learn.spring_security.app.userManagement.enums.RoleType;
+import com.learn.spring_security.base.userManagement.enums.RoleType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,7 +41,7 @@ public class SecurityConfig {
     SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(c -> c.requestMatchers(WHITE_LIST_APIS).permitAll());
-        http.authorizeHttpRequests(c -> c.requestMatchers("/admin-controls").hasRole(RoleType.SUPER_ADMIN.getValue()));
+        http.authorizeHttpRequests(c -> c.requestMatchers("/admin-control").hasRole(RoleType.SUPER_ADMIN.getValue()));
         http.authorizeHttpRequests(c -> c.requestMatchers("/admin").hasAnyRole(RoleType.SUPER_ADMIN.getValue(), RoleType.ADMIN.getValue()));
         http.authorizeHttpRequests(c -> c.requestMatchers("/editor").hasAnyRole(RoleType.EDITOR.getValue(), RoleType.ADMIN.getValue()));
         http.authorizeHttpRequests(c -> c.anyRequest().authenticated());

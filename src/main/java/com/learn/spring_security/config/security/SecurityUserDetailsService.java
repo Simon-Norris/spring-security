@@ -1,6 +1,6 @@
 package com.learn.spring_security.config.security;
 
-import com.learn.spring_security.app.userManagement.repo.UserRepo;
+import com.learn.spring_security.base.userManagement.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

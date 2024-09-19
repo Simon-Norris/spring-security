@@ -1,7 +1,7 @@
-package com.learn.spring_security.app.userManagement.controller;
+package com.learn.spring_security.app.superAdmin.controller;
 
-import com.learn.spring_security.app.userManagement.entity.User;
-import com.learn.spring_security.app.userManagement.service.UserService;
+import com.learn.spring_security.base.userManagement.entity.User;
+import com.learn.spring_security.base.userManagement.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;

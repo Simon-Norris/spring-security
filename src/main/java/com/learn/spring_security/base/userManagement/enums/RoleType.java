@@ -1,4 +1,4 @@
-package com.learn.spring_security.app.userManagement.enums;
+package com.learn.spring_security.base.userManagement.enums;
 
 import lombok.Getter;
 

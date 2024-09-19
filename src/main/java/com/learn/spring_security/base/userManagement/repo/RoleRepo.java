@@ -1,7 +1,7 @@
-package com.learn.spring_security.app.userManagement.repo;
+package com.learn.spring_security.base.userManagement.repo;
 
-import com.learn.spring_security.app.userManagement.entity.Role;
-import com.learn.spring_security.app.userManagement.enums.RoleType;
+import com.learn.spring_security.base.userManagement.entity.Role;
+import com.learn.spring_security.base.userManagement.enums.RoleType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

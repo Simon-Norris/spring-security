@@ -1,4 +1,4 @@
-package com.learn.spring_security.app.general;
+package com.learn.spring_security.app.users;
 
 import org.springframework.stereotype.Service;
 

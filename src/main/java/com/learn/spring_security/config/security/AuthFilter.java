@@ -1,5 +1,6 @@
 package com.learn.spring_security.config.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,6 +47,8 @@ public class AuthFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
+        } catch (ExpiredJwtException e) {
+            logger.error("::: Access Token Expired ::: ");
         } catch (Exception ex) {
             logger.error("::: Could not set user authentication in security context due to {}:::", ex);
         }

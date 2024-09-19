@@ -1,6 +1,6 @@
-package com.learn.spring_security.app.userManagement.entity;
+package com.learn.spring_security.base.userManagement.entity;
 
-import com.learn.spring_security.app.userManagement.enums.RoleType;
+import com.learn.spring_security.base.userManagement.enums.RoleType;
 import com.learn.spring_security.base.entity.Auditable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
