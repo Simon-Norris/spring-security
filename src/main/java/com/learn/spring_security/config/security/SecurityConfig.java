@@ -41,9 +41,9 @@ public class SecurityConfig {
     SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(c -> c.requestMatchers(WHITE_LIST_APIS).permitAll());
-        http.authorizeHttpRequests(c -> c.requestMatchers("/admin-control").hasRole(RoleType.SUPER_ADMIN.getValue()));
-        http.authorizeHttpRequests(c -> c.requestMatchers("/admin").hasAnyRole(RoleType.SUPER_ADMIN.getValue(), RoleType.ADMIN.getValue()));
-        http.authorizeHttpRequests(c -> c.requestMatchers("/editor").hasAnyRole(RoleType.EDITOR.getValue(), RoleType.ADMIN.getValue()));
+        http.authorizeHttpRequests(c -> c.requestMatchers("api/v1/admin-control").hasRole(RoleType.SUPER_ADMIN.getValue()));
+        http.authorizeHttpRequests(c -> c.requestMatchers("api/v1/admin").hasAnyRole(RoleType.SUPER_ADMIN.getValue(), RoleType.ADMIN.getValue()));
+        http.authorizeHttpRequests(c -> c.requestMatchers("api/v1/editor").hasAnyRole(RoleType.EDITOR.getValue(), RoleType.ADMIN.getValue()));
         http.authorizeHttpRequests(c -> c.anyRequest().authenticated());
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
