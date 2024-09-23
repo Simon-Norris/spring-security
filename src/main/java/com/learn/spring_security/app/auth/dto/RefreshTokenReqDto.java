@@ -7,10 +7,8 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class AuthResponseDto {
+public class RefreshTokenReqDto {
 
+    private String token;
     private String accessToken;
-    private String refreshToken;
-    private String username;
-    private final String type = "Bearer";
 }

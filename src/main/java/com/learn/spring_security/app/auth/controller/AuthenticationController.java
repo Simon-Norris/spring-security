@@ -2,13 +2,20 @@ package com.learn.spring_security.app.auth.controller;
 
 import com.learn.spring_security.app.auth.dto.AuthResponseDto;
 import com.learn.spring_security.app.auth.dto.LoginRequestDto;
+import com.learn.spring_security.app.auth.dto.RefreshTokenReqDto;
 import com.learn.spring_security.app.auth.dto.UserRegisterDto;
+import com.learn.spring_security.app.exceptions.TokenRefreshException;
+import com.learn.spring_security.app.exceptions.UsernameNotFoundException;
+import com.learn.spring_security.base.entity.RefreshToken;
+import com.learn.spring_security.base.service.RefreshTokenService;
 import com.learn.spring_security.base.userManagement.entity.User;
 import com.learn.spring_security.base.userManagement.enums.RoleType;
 import com.learn.spring_security.base.userManagement.service.UserService;
 import com.learn.spring_security.config.security.JwtUtils;
 import com.learn.spring_security.utils.ApiResponse;
 import com.learn.spring_security.utils.ApiResponseModel;
+import com.learn.spring_security.utils.UtilService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -35,11 +43,14 @@ public class AuthenticationController {
 
     private final JwtUtils jwtUtils;
 
-    public AuthenticationController(UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+    private final RefreshTokenService refreshTokenService;
+
+    public AuthenticationController(UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils, RefreshTokenService refreshTokenService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping("/register")
@@ -61,7 +72,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseModel> login(@RequestBody LoginRequestDto req) {
+    public ResponseEntity<ApiResponseModel> login(@RequestBody LoginRequestDto req, HttpServletRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         req.getUsername(),
@@ -69,11 +80,46 @@ public class AuthenticationController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        AuthResponseDto authResponseDto = AuthResponseDto.builder()
-                .accessToken(jwtUtils.generateToken(req.getUsername()))
-                .refreshToken(jwtUtils.generateRefreshToken(req.getUsername()))
-                .username(req.getUsername())
-                .build();
-        return ApiResponse.success(HttpStatus.OK, "Token created successfully", authResponseDto);
+        String jwtToken = jwtUtils.generateToken(req.getUsername());
+        try {
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(req.getUsername(), UtilService.refreshTokenAttributes(request), jwtToken);
+            AuthResponseDto authResponseDto = AuthResponseDto.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken.getToken())
+                    .username(req.getUsername())
+                    .build();
+            return ApiResponse.success(HttpStatus.OK, "Token created successfully", authResponseDto);
+        } catch (UsernameNotFoundException exception) {
+            return ApiResponse.errorWithStatusAndMessage(HttpStatus.UNAUTHORIZED, "Token creation failed");
+        }
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ApiResponseModel> refreshToken(@RequestBody RefreshTokenReqDto req, HttpServletRequest request) {
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenService.findByToken(req.getToken());
+        if (refreshTokenOptional.isEmpty()) {
+            return ApiResponse.errorWithStatusAndMessage(HttpStatus.UNAUTHORIZED, "No such token exists");
+        }
+        RefreshToken refreshToken = refreshTokenOptional.get();
+        Optional<User> optionalUser = userService.findUserByName(refreshToken.getUser().getUsername());
+        if (optionalUser.isEmpty()) return ApiResponse.errorWithStatusAndMessage(HttpStatus.UNAUTHORIZED, "User doesn't exist");
+        User user = optionalUser.get();
+
+        try {
+            refreshTokenService.verifyExpiration(refreshToken, req.getAccessToken());
+            String newAccessToken = jwtUtils.generateToken(user.getUsername());
+            RefreshToken newRefreshToken = refreshTokenService.rotateRefreshToken(refreshToken.getToken(), user.getUsername(), UtilService.refreshTokenAttributes(request), newAccessToken);
+
+            AuthResponseDto authResponseDto = AuthResponseDto.builder()
+                    .accessToken(newAccessToken)
+                    .refreshToken(newRefreshToken.getToken())
+                    .username(user.getUsername())
+                    .build();
+            return ApiResponse.success(HttpStatus.OK, "Token refreshed successfully", authResponseDto);
+        } catch (TokenRefreshException e) {
+            return ApiResponse.errorWithStatusAndMessage(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (UsernameNotFoundException e) {
+            return ApiResponse.errorWithStatusAndMessage(HttpStatus.UNAUTHORIZED, "Token creation failed");
+        }
     }
 }

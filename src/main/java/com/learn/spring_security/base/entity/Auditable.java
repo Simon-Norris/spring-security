@@ -36,4 +36,7 @@ public abstract class Auditable {
     @LastModifiedBy
     @Column(nullable = false)
     private String modifiedBy;
+
+    @Version
+    private int version;
 }

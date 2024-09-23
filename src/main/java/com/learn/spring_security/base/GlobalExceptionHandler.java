@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.sql.SQLException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -52,5 +54,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiResponseModel> handleBadCredentialsExceptions(BadCredentialsException ex) {
         return ApiResponse.errorWithStatusAndMessage(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(value = SQLException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiResponseModel> handleBadCredentialsExceptions(SQLException ex) {
+        return ApiResponse.errorWithStatusAndMessage(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 }
