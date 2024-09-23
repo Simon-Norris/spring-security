@@ -16,6 +16,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
@@ -28,8 +29,10 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        ResponseEntity<ApiResponseModel> apiResponseModelResponseEntity = ApiResponse.errorWithStatusAndMessage(HttpStatus.UNAUTHORIZED, authException.getMessage());
+        Exception exception = (Exception) request.getAttribute("exception");
         final ObjectMapper mapper = new ObjectMapper();
+        ResponseEntity<ApiResponseModel> apiResponseModelResponseEntity;
+        apiResponseModelResponseEntity = ApiResponse.errorWithStatusAndMessage(HttpStatus.UNAUTHORIZED, Objects.requireNonNullElse(exception, authException).getMessage());
         mapper.writeValue(response.getOutputStream(), apiResponseModelResponseEntity.getBody());
     }
 

@@ -49,8 +49,23 @@ public class AuthFilter extends OncePerRequestFilter {
             }
         } catch (ExpiredJwtException e) {
             logger.error("::: Access Token Expired ::: ");
+            try {
+                String refreshToken = request.getHeader("Refresh-Token");
+                if (refreshToken != null && !jwtUtils.validateRefreshToken(refreshToken)) {
+                    String newAccessToken = jwtUtils.generateRefreshToken(e.getClaims().getSubject());
+                    response.setHeader("New-Access-Token", newAccessToken);
+                    filterChain.doFilter(request, response);
+                } else {
+                    logger.error("::: Refresh Token Expired/not presesnt ::: ");
+                    request.setAttribute("exception", e);
+                }
+            } catch (ExpiredJwtException ex) {
+                logger.error("::: Refresh Token Expired ::: ");
+                request.setAttribute("exception", ex);
+            }
         } catch (Exception ex) {
             logger.error("::: Could not set user authentication in security context due to {}:::", ex);
+            request.setAttribute("exception", ex);
         }
 
         filterChain.doFilter(request, response);

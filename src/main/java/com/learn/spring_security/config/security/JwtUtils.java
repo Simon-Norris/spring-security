@@ -155,4 +155,46 @@ public class JwtUtils {
 
         return (isUsernameValid && !isJwtTokenExpired);
     }
+
+
+    // Refresh Token
+
+    /**
+     * Generates a JWT refresh token against user details.
+     *
+     * @param username the subject of the token
+     * @return the JWT token
+     */
+    public String generateRefreshToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        return createRefreshToken(claims, username);
+    }
+
+    /**
+     * Creates a JWT refresh token with provided claims and subject.
+     *
+     * @param claims   additional claims to be included in the refresh token
+     * @param username the subject of the token
+     * @return the generated JWT refresh token
+     */
+    private String createRefreshToken(Map<String, Object> claims, String username) {
+        return Jwts.builder()
+                .claims(claims)
+                .subject(username)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + refreshExpirationInMillis))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    /**
+     * Validates a JWT refresh token with given token
+     *
+     * @param refreshToken a JWT refresh token
+     * @return true if token is expired, false otherwise
+     */
+    public boolean validateRefreshToken(String refreshToken) {
+        return isTokenExpired(refreshToken);
+    }
+
 }

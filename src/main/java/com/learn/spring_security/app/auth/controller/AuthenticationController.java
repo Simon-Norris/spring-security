@@ -1,5 +1,6 @@
 package com.learn.spring_security.app.auth.controller;
 
+import com.learn.spring_security.app.auth.dto.AuthResponseDto;
 import com.learn.spring_security.app.auth.dto.LoginRequestDto;
 import com.learn.spring_security.app.auth.dto.UserRegisterDto;
 import com.learn.spring_security.base.userManagement.entity.User;
@@ -68,7 +69,11 @@ public class AuthenticationController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return ApiResponse.success(HttpStatus.OK, "Token created successfully", jwtUtils.generateToken(req.getUsername()));
+        AuthResponseDto authResponseDto = AuthResponseDto.builder()
+                .accessToken(jwtUtils.generateToken(req.getUsername()))
+                .refreshToken(jwtUtils.generateRefreshToken(req.getUsername()))
+                .username(req.getUsername())
+                .build();
+        return ApiResponse.success(HttpStatus.OK, "Token created successfully", authResponseDto);
     }
 }
