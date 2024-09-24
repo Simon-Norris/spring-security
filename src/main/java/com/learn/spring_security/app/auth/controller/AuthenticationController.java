@@ -125,10 +125,10 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponseModel> logout() {
         try {
             SecurityUser securityUser = UtilService.loggedInUser();
-
             boolean isTokenDeleted = this.refreshTokenService.deleteByUser(securityUser.getUser());
 
             if (isTokenDeleted) {
+                SecurityContextHolder.clearContext();
                 return ApiResponse.successWithStatusAndReason(HttpStatus.OK, "Logout successful");
             } else {
                 return ApiResponse.errorWithStatusAndMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Logout failed");
