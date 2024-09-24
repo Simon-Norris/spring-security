@@ -7,6 +7,7 @@ import com.learn.spring_security.base.entity.RefreshTokenAttributes;
 import com.learn.spring_security.base.repo.RefreshTokenRepository;
 import com.learn.spring_security.base.userManagement.entity.User;
 import com.learn.spring_security.base.userManagement.repo.UserRepo;
+import com.learn.spring_security.utils.EncryptionUtils;
 import com.learn.spring_security.utils.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +45,7 @@ public class RefreshTokenService {
   }
 
   @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-  public RefreshToken createRefreshToken(String username, RefreshTokenAttributes attrs, String accessToken) throws UsernameNotFoundException {
+  public RefreshToken createRefreshToken(String username, RefreshTokenAttributes attrs, String accessToken) throws UsernameNotFoundException, TokenRefreshException {
     Optional<User> byUsername = userRepo.findByUsername(username);
     User user = byUsername.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
@@ -61,7 +62,12 @@ public class RefreshTokenService {
     refreshToken.setExpiryDate(Instant.now().plusMillis(refreshExpirationInMillis));
     refreshToken.setToken(System.currentTimeMillis()+"-"+UUID.randomUUID());
     refreshToken.setAttributes(UtilService.convertToJsonString(attrs));
-    refreshToken.setAccessToken(passwordEncoder.encode(accessToken));
+
+    try {
+      refreshToken.setAccessToken(EncryptionUtils.encrypt(accessToken));
+    } catch (Exception e) {
+      throw new TokenRefreshException("Cannot issue refresh token at the moment. Please try again later");
+    }
 
     refreshToken = refreshTokenRepository.save(refreshToken);
     return refreshToken;
@@ -76,7 +82,11 @@ public class RefreshTokenService {
    */
   @Transactional
   public RefreshToken verifyExpiration(RefreshToken token, String accessToken) throws TokenRefreshException {
-    if ((token.getExpiryDate().compareTo(Instant.now()) < 0) || !validateAccessTokenWithRefreshToken(token, accessToken)){
+
+    if (!validateAccessTokenWithRefreshToken(token, accessToken)) {
+        throw new TokenRefreshException("Token not matched. Please login again to continue");
+    }
+    if ((token.getExpiryDate().compareTo(Instant.now()) < 0)){
       refreshTokenRepository.delete(token);
       throw new TokenRefreshException("Session expired. Please login again to continue");
     }
@@ -112,8 +122,13 @@ public class RefreshTokenService {
    * @param accessToken encoded jwt access token
    * @return true if saved refresh token instance and jwt access token matches otherwise false
    */
-  public boolean validateAccessTokenWithRefreshToken(RefreshToken refreshToken, String accessToken) {
-    return passwordEncoder.matches(accessToken, refreshToken.getAccessToken());
+  public boolean validateAccessTokenWithRefreshToken(RefreshToken refreshToken, String accessToken) throws TokenRefreshException {
+    try {
+      String decryptedToken = EncryptionUtils.decrypt(refreshToken.getAccessToken());
+      return accessToken.equals(decryptedToken);
+    } catch (Exception e) {
+      throw new TokenRefreshException("Token validation failed. Please login again to continue");
+    }
   }
 
 

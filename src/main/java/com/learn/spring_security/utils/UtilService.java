@@ -103,4 +103,11 @@ public class UtilService {
         return Base64.encodeBase64URLSafeString(token); // Encode as a base64 URL safe string
     }
 
+    public static byte[] generateRandom(int length) {
+        SecureRandom random = new SecureRandom();
+        byte[] randomBytes = new byte[length];
+        random.nextBytes(randomBytes);
+        return randomBytes;
+    }
+
 }

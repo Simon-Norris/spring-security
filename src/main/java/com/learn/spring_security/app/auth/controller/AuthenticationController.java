@@ -14,6 +14,7 @@ import com.learn.spring_security.base.userManagement.service.UserService;
 import com.learn.spring_security.config.security.JwtUtils;
 import com.learn.spring_security.utils.ApiResponse;
 import com.learn.spring_security.utils.ApiResponseModel;
+import com.learn.spring_security.utils.EncryptionUtils;
 import com.learn.spring_security.utils.UtilService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -89,7 +90,7 @@ public class AuthenticationController {
                     .username(req.getUsername())
                     .build();
             return ApiResponse.success(HttpStatus.OK, "Token created successfully", authResponseDto);
-        } catch (UsernameNotFoundException exception) {
+        } catch (UsernameNotFoundException | TokenRefreshException exception) {
             return ApiResponse.errorWithStatusAndMessage(HttpStatus.UNAUTHORIZED, "Token creation failed");
         }
     }

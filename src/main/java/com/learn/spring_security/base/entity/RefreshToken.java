@@ -35,7 +35,7 @@ public class RefreshToken {
     @Column(columnDefinition = "TEXT")
     private String attributes;
 
-    @Column(nullable = false)
+    @Column(nullable = false,  columnDefinition = "TEXT")
     private String accessToken;
 
     @Version
