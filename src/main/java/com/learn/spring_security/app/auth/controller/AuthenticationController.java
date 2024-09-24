@@ -12,9 +12,9 @@ import com.learn.spring_security.base.userManagement.entity.User;
 import com.learn.spring_security.base.userManagement.enums.RoleType;
 import com.learn.spring_security.base.userManagement.service.UserService;
 import com.learn.spring_security.config.security.JwtUtils;
+import com.learn.spring_security.config.security.SecurityUser;
 import com.learn.spring_security.utils.ApiResponse;
 import com.learn.spring_security.utils.ApiResponseModel;
-import com.learn.spring_security.utils.EncryptionUtils;
 import com.learn.spring_security.utils.UtilService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -25,10 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.Set;
@@ -123,4 +120,24 @@ public class AuthenticationController {
             return ApiResponse.errorWithStatusAndMessage(HttpStatus.UNAUTHORIZED, "Token creation failed");
         }
     }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<ApiResponseModel> logout() {
+        try {
+            SecurityUser securityUser = UtilService.loggedInUser();
+
+            boolean isTokenDeleted = this.refreshTokenService.deleteByUser(securityUser.getUser());
+
+            if (isTokenDeleted) {
+                return ApiResponse.successWithStatusAndReason(HttpStatus.OK, "Logout successful");
+            } else {
+                return ApiResponse.errorWithStatusAndMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Logout failed");
+            }
+
+        } catch (UsernameNotFoundException e) {
+            return ApiResponse.errorWithStatusAndMessage(HttpStatus.UNAUTHORIZED, "User not found for logout");
+        }
+    }
+
+
 }

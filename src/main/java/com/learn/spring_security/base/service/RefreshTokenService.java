@@ -131,5 +131,19 @@ public class RefreshTokenService {
     }
   }
 
+  @Transactional
+  public boolean deleteByUser(User user) {
+    Optional<RefreshToken> existingRefreshToken = this.findByUser(user);
+    if (existingRefreshToken.isEmpty()) return false;
+    try {
+      existingRefreshToken.ifPresent(token -> {
+        this.refreshTokenRepository.deleteByUser(user);
+      });
+      return true;
+    } catch (Exception e ) {
+      return false;
+    }
+  }
+
 
 }
