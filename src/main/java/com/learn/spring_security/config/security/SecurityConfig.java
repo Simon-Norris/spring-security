@@ -35,7 +35,8 @@ public class SecurityConfig {
             "api/v1/auth/register",
             "api/v1/auth/refresh-token",
             "api/v1/auth/forget-password",
-            "api/v1/dashboard"
+            "api/v1/dashboard",
+            "api/v1/contact/raise"
     };
 
     @Bean
